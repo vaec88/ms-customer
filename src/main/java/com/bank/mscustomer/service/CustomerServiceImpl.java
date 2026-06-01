@@ -2,6 +2,7 @@ package com.bank.mscustomer.service;
 
 import com.bank.mscustomer.controller.dto.CreateCustomerRequestDto;
 import com.bank.mscustomer.controller.dto.CreateCustomerResponseDto;
+import com.bank.mscustomer.controller.dto.UpdateCustomerRequestDto;
 import com.bank.mscustomer.exception.CustomerNotFoundException;
 import com.bank.mscustomer.model.Customer;
 import com.bank.mscustomer.repository.CustomerRepository;
@@ -94,15 +95,12 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Mono<CreateCustomerResponseDto> update(Long id, CreateCustomerRequestDto customerRequest) {
+    public Mono<CreateCustomerResponseDto> update(Long id, UpdateCustomerRequestDto customerRequest) {
         log.info("Start update customer");
         return customerRepository.findById(id)
                 .switchIfEmpty(Mono.error(new CustomerNotFoundException(id)))
                 .flatMap(customer -> {
-                    customer.setName(customerRequest.getName());
-                    customer.setAddress(customerRequest.getAddress());
-                    customer.setPhone(customerRequest.getPhone());
-                    customer.setPassword(customerRequest.getPassword());
+                    validateEditFields(customer, customerRequest);
                     customer.setModifiedAt(LocalDateTime.now());
                     return customerRepository.save(customer)
                             .map(customerUpdated -> CreateCustomerResponseDto.builder()
@@ -131,5 +129,20 @@ public class CustomerServiceImpl implements CustomerService {
                 .flatMap(customerRepository::delete)
                 .doOnSuccess(response ->
                         log.info("End delete customer. id = {}", id));
+    }
+
+    private void validateEditFields(Customer customer, UpdateCustomerRequestDto customerRequest) {
+        if (null != customerRequest.getName()) {
+            customer.setName(customerRequest.getName());
+        }
+        if (null != customerRequest.getAddress()) {
+            customer.setAddress(customerRequest.getAddress());
+        }
+        if (null != customerRequest.getPhone()) {
+            customer.setPhone(customerRequest.getPhone());
+        }
+        if (null != customerRequest.getPassword()) {
+            customer.setPassword(passwordEncoder.encode(customerRequest.getPassword()));
+        }
     }
 }

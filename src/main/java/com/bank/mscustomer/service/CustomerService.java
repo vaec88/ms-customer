@@ -2,6 +2,7 @@ package com.bank.mscustomer.service;
 
 import com.bank.mscustomer.controller.dto.CreateCustomerRequestDto;
 import com.bank.mscustomer.controller.dto.CreateCustomerResponseDto;
+import com.bank.mscustomer.controller.dto.UpdateCustomerRequestDto;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -40,7 +41,7 @@ public interface CustomerService {
      * @param customerRequest the request containing customer data
      * @return a Mono of the updated customer {@link CreateCustomerResponseDto}
      */
-    Mono<CreateCustomerResponseDto> update(Long id, CreateCustomerRequestDto customerRequest);
+    Mono<CreateCustomerResponseDto> update(Long id, UpdateCustomerRequestDto customerRequest);
 
     /**
      * Deletes a customer by ID

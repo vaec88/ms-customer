@@ -2,6 +2,7 @@ package com.bank.mscustomer.controller;
 
 import com.bank.mscustomer.controller.dto.CreateCustomerRequestDto;
 import com.bank.mscustomer.controller.dto.CreateCustomerResponseDto;
+import com.bank.mscustomer.controller.dto.UpdateCustomerRequestDto;
 import com.bank.mscustomer.service.CustomerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -76,7 +77,7 @@ public class CustomerRestController {
      */
     @PutMapping("/{id}")
     public Mono<ResponseEntity<CreateCustomerResponseDto>> update(
-            @PathVariable Long id, @RequestBody CreateCustomerRequestDto customerRequest) {
+            @PathVariable Long id, @RequestBody UpdateCustomerRequestDto customerRequest) {
         return customerService.update(id, customerRequest)
                 .map(ResponseEntity::ok);
     }
